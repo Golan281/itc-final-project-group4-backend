@@ -29,6 +29,7 @@
 - mongoDB will have the following docs: users, tokens, userWorkspaces (object that has 5 keys according to the user's workspaces, each stores two arrays - current tabs and archived tabs)
 
 # technoglogies:
-- definitely a mern stack app, SCSS, maybe TS?
+- definitely a mern stack app
+- new stuff: SCSS, TS, MUI
 
 

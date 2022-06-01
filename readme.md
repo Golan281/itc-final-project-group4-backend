@@ -1,3 +1,7 @@
+# App name ideas:
+- motivational tabs? || dontKeepTabs || ToGather || to tab or not to tab?
+
+
 # run with 'npm start'
 
 # .env file settings:
@@ -29,6 +33,21 @@
 - mongoDB will have the following docs: users, tokens, userWorkspaces (object that has 5 keys according to the user's workspaces, each stores two arrays - current tabs and archived tabs)
 
 # technoglogies:
-- definitely a mern stack app, SCSS, maybe TS?
+- definitely a mern stack app, SCSS, TS, MUI-TS
+- react router
 
 
+# Roles:
+- backend API & schemas & DBA - Golan
+- backend API & schemas & DBA - Raphael
+- front - main pages - Vale
+- front - smaller components - Johnathan
+
+
+
+
+# design ref:
+- https://codepen.io/abasiubong/pen/QWQOmqv
+
+# our chart:
+https://drive.google.com/file/d/1cLWwhJDU3qmSbKKoNLMIZAGDjs7IqHee/view?usp=sharing

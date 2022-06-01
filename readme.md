@@ -45,11 +45,6 @@
 - front - smaller components - Johnathan
 
 
-
-=======
-- definitely a mern stack app
-- new stuff: SCSS, TS, MUI
-
 # design ref:
 - https://codepen.io/abasiubong/pen/QWQOmqv
 

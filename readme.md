@@ -33,6 +33,7 @@
 - mongoDB will have the following docs: users, tokens, userWorkspaces (object that has 5 keys according to the user's workspaces, each stores two arrays - current tabs and archived tabs)
 
 # technoglogies:
+<<<<<<< HEAD
 - definitely a mern stack app, SCSS, TS, MUI-TS
 - react router
 
@@ -45,6 +46,10 @@
 
 
 
+=======
+- definitely a mern stack app
+- new stuff: SCSS, TS, MUI
+>>>>>>> e3d09cf6a77d912775c6b4e39c8f08a3caa16768
 
 # design ref:
 - https://codepen.io/abasiubong/pen/QWQOmqv

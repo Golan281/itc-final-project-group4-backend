@@ -2,13 +2,25 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
-// const dbConnection = require('./db/mConnection');
+const dbConnection = require('./controllers/db/mConnection');
 
-// dbConnection(); 
+const authRouter = require('./routes/authRoute');
+
+app.use(cors({
+    origin: `${process.env.CORS_ORIGIN}`,
+}))
 
 
-app.get((req,res,next) => {
-    res.send('hello world')
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+dbConnection(); 
+
+app.use('/v1/auth',authRouter);
+
+app.get('/', (req,res,next) => {
+    res.send('hello world');
 })
 
 
@@ -17,6 +29,7 @@ app.use((err,req,res,next)=> {
     res.status(400).send({
         error: true,
         message: err,
+        //can use - err || err.message (if throwing errors)
     });
 })
 

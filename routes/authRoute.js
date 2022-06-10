@@ -34,7 +34,8 @@ router.post('/register', async (req, res, next) => {
 });
 
 
-//forgot pwd route - delete hashed pwd and just overwrite it - but must verify with some other method
+//forgot pwd route:
+// delete hashed pwd on db and just overwrite it - but must verify with some other method or the acc token is enough?
 
 
 module.exports = router;

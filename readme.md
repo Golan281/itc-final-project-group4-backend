@@ -9,6 +9,8 @@
 - JWT_SECRET=bla
 - SALT=bla
 - CORS_ORIGIN=bla
+- PORT=8000
+- HOST=localhost
 
 # The general idea:
 - a browser management & dashboard app on steriods,something that resembles the following (but does it better!):

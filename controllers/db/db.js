@@ -1,12 +1,15 @@
-const { nanoid } = require("nanoid");
+
+// const { nanoid } = require("nanoid");
+// const ID = nanoid();
+//maybe go with other ID type
 const { Tab } = require("../../models/mongooseModels/tabSchema");
 
 const path = `${__dirname}/db`;
 
 class DB {
-  constructor(abName) {
-    this.abName = abName;
-    this.abPath = `${path}/${abName}.json`;
+  constructor(tabName) {
+    this.tabName = tabName;
+    this.abPath = `${path}/${tabName}.json`;
   }
 
   createTab = async (tab) => {

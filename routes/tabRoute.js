@@ -1,14 +1,14 @@
 const express = require("express");
 const DB = require("../controllers/db/db");
-const TabController = require("../controllers/db/tabController");
-const tab = express.Router();
+const tabController = require("../controllers/db/tabController");
+const tabRouter = express.Router();
 
-tab.get("/", TabController.getTab);
+tabRouter.get("/", tabController.getTab);
 
-tab.post("/", TabController.createTab);
+tabRouter.post("/", tabController.createTab);
 
-tab.patch("/:TabId", TabController.updateTabCol);
+tabRouter.patch("/:tabId", tabController.updateTabCol);
 
-tab.delete("/:TabId", TabController.deleteTab);
+tabRouter.delete("/:tabId", tabController.deleteTab);
 
-module.exports = tab;
+module.exports = tabRouter;

@@ -1,16 +1,9 @@
 # App name ideas:
 - motivational tabs? || dontKeepTabs || ToGather || to tab or not to tab?
-
+- new ideas: meticulous tabs || accurateTabs || dilligentTabs
 
 # run with 'npm start'
 
-# .env file settings:
-- DB_URI=bla
-- JWT_SECRET=bla
-- SALT=bla
-- CORS_ORIGIN=bla
-- PORT=8000
-- HOST=localhost
 
 # The general idea:
 - a browser management & dashboard app on steriods,something that resembles the following (but does it better!):
@@ -52,3 +45,63 @@
 
 # our chart:
 https://drive.google.com/file/d/1cLWwhJDU3qmSbKKoNLMIZAGDjs7IqHee/view?usp=sharing
+
+
+# ref - json structure:
+
+{
+	"User": {
+		"createdAt": 1621438077211,
+		"updatedAt": 1655553191476,
+		"name": "",
+		"id": "",
+		"lastActive": 1655552745395,
+		"domain": "gmail.com",
+		"email": "user@gmail.com",
+		"avatar": "https://lh3.googleusercontent.com/a-/AOh14Gib6q6P3easoknkbRo4tw901uk12OEefkmjpeVlNw=s96-c"
+	},
+	"Workspaces": [
+		{
+			"title": "Ungrouped",
+			"workspaces": [
+				{
+					"title": "HEB & ESP & recent code",
+					"color": "magenta",
+					"tabs": [],
+					"resources": [
+						{
+							"title": "Resources",
+							"resources": []
+						}
+					],
+					"notes": [
+						{
+							"title": "Notes",
+							"notes": [
+								{
+									"title": "",
+									"description": null,
+									"attachments": []
+								}
+							]
+						}
+					],
+					"tasks": [
+						{
+							"title": "Tasks",
+							"tasks": []
+						}
+					]
+				},
+				{
+					"title": "OI",
+					"color": "blue",
+					"tabs": [
+						{
+							"title": "Workona",
+							"url": "https://workona.com/export/mydata/"
+						},
+						{
+							"title": "ניהול כספיאפריל 2022 - Documentos de Google",
+							"url": "https://docs.google.com/document/d/1jGguySPFlGMQtUVyDjV3NxI2BWNRqxPO9lL6O-aHa7s/edit"
+					

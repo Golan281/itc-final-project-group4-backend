@@ -4,6 +4,7 @@ const router = express.Router();
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const saltRounds = parseInt(process.env.SALT);
+//only used on login route currently
 const mongooseUserSchema = require('../models/mongooseModels/userSchema');
 const ajvRegisterSchema = require('../models/validationSchemas/ajvAuthRegister.schema')
 const ajvLoginSchema = require('../models/validationSchemas/ajvAuthLogin.schema')
@@ -12,13 +13,14 @@ const ajvLoginSchema = require('../models/validationSchemas/ajvAuthLogin.schema'
 const signUserIn = require('../middleware/signUserIn');
 const ajvValidator = require('../middleware/ajvValidator');
 
+const userController = require('../controllers/db/userController');
 
 app.use(express.json());
 // 
 router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) => {
     try {    
         delete req.body.repassword;
-        const checkIfUserExists = await mongooseUserSchema.find({email: req.body.email});
+        const checkIfUserExists = await userController.checkIfUserExists(req.body.email);
         // console.log('if user exists?>',checkIfUserExists)
         if (checkIfUserExists[0]) {
             throw new Error('user already exists');
@@ -27,9 +29,8 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
         req.body.password = hashedPwd;
         // console.log(req.body)
 
-        const user = await mongooseUserSchema.create({ ...req.body })
+        const user = await userController.createUser({...req.body});
         if (!user) throw new Error('Could not register, please try again');
-        // console.log('user that should be saved on mongo>', user)
         const signedInUserObj = await signUserIn(user);
         res.status(201).json({...signedInUserObj, isValid: true, isLoggedIn: true});
     } catch (err) {
@@ -47,7 +48,8 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
           const user = await mongooseUserSchema.findOne({ email });
           if (!user) {
               console.log(' in case !user:', user)
-              return next(`Inexistent user`);
+            //   return next(`Inexistent user`);
+              throw new Error(`Inexistent user`);
             }
             const isValid = bcrypt.compareSync(password, user.password);
             delete req.body.password;
@@ -57,9 +59,11 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
     
                 return res.json({...signedInUserObj, isValid, isLoggedIn: true});
             }
-            next('Login attempt failed, token didnt generate?');
-            res.setHeader('tokens',token);
-            res.json({firstName: user.firstName,});
+            // next('Login attempt failed, token didnt generate?');
+            // res.setHeader('tokens',token);
+            // res.json({firstName: user.firstName,});
+            if (isValid === false) throw new Error('Login attempt failed, wrong password');
+            next();
     
         } catch (err) {
           res.status(500).json({ message: err.message })

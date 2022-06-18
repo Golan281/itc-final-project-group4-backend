@@ -79,11 +79,11 @@ class DB {
   };
 
   save = (data) => {
-    fs.writeFileSync(this.abPath, JSON.stringify(data));
+    fs.writeFileSync(this.tabPath, JSON.stringify(data));
   };
 
   get = () => {
-    const data = fs.readFileSync(this.abPath, "utf-8");
+    const data = fs.readFileSync(this.tabPath, "utf-8");
     return JSON.parse(data);
   };
 

@@ -12,6 +12,7 @@ const ajvLoginSchema = require('../models/validationSchemas/ajvAuthLogin.schema'
 
 const signUserIn = require('../middleware/signUserIn');
 const ajvValidator = require('../middleware/ajvValidator');
+const authorizeUser = require('../middleware/authorizeUser');
 
 const userController = require('../controllers/db/userController');
 
@@ -69,6 +70,26 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
           res.status(500).json({ message: err.message })
         }
     })
+
+router.post('/refresh', authorizeUser, (req, res, next) => {
+
+    const refreshToken = req.headers.authorization;
+    const tokenString = JSON.stringify(refreshToken);
+    console.log('refreshToken from user req is>', tokenString);
+
+        // const tokensDB = new tmpDB('tokensDB');
+        // const pack = tokensDB.find((i) => i.refresh_token === refreshToken);
+        // if (!pack) { //for a malicios attempt
+        //     return next('Please login to continue');
+        // }
+
+        // tokensDB.del(pack.id);
+
+        const tokens = tokenGenerator(pack.userId);
+
+        res.send(tokens);
+    });
+
 
 //forgot pwd route:
 // delete hashed pwd on db and just overwrite it - but must verify with some other method or the acc token is enough?

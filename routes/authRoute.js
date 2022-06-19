@@ -4,8 +4,7 @@ const router = express.Router();
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const saltRounds = parseInt(process.env.SALT);
-//only used on login route currently
-const mongooseUserSchema = require('../models/mongooseModels/userSchema');
+
 const ajvRegisterSchema = require('../models/validationSchemas/ajvAuthRegister.schema')
 const ajvLoginSchema = require('../models/validationSchemas/ajvAuthLogin.schema')
 
@@ -46,10 +45,9 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
 router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
     const { email, password } = req.body;
         try {
-          const user = await mongooseUserSchema.findOne({ email });
+            const user = await userController.findUserToLogin(email);
           if (!user) {
               console.log(' in case !user:', user)
-            //   return next(`Inexistent user`);
               throw new Error(`Inexistent user`);
             }
             const isValid = bcrypt.compareSync(password, user.password);
@@ -60,9 +58,6 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
     
                 return res.json({...signedInUserObj, isValid, isLoggedIn: true});
             }
-            // next('Login attempt failed, token didnt generate?');
-            // res.setHeader('tokens',token);
-            // res.json({firstName: user.firstName,});
             if (isValid === false) throw new Error('Login attempt failed, wrong password');
             next();
     
@@ -72,27 +67,47 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
     })
 
 router.post('/refresh', authorizeUser, (req, res, next) => {
+    try {
+        const refreshToken = req.headers.authorization;
+        const tokenString = JSON.stringify(refreshToken);
+        console.log('refreshToken from user req is>', tokenString);
+    
+        // var cookieOptions = new CookieOptions
+        // {
+        //     HttpOnly = true,
+        //     Expires = DateTime.UtcNow.AddDays(7),
+        //     SameSite = SameSiteMode.None,
+        //     Secure = true
+        // };
+        // Response.Cookies.Append("refreshToken", token, cookieOptions);
+    
+            const tokens = tokenGenerator(pack.userId);
+    
+            res.send(tokens);
 
-    const refreshToken = req.headers.authorization;
-    const tokenString = JSON.stringify(refreshToken);
-    console.log('refreshToken from user req is>', tokenString);
+    } catch (err) {
 
-        // const tokensDB = new tmpDB('tokensDB');
-        // const pack = tokensDB.find((i) => i.refresh_token === refreshToken);
-        // if (!pack) { //for a malicios attempt
-        //     return next('Please login to continue');
-        // }
+    }
 
-        // tokensDB.del(pack.id);
-
-        const tokens = tokenGenerator(pack.userId);
-
-        res.send(tokens);
     });
 
 
 //forgot pwd route:
 // delete hashed pwd on db and just overwrite it - but must verify with some other method or the acc token is enough?
 
+
+router.post('/resetpwd', authorizeUser, (req,res,next) => {
+    try {
+        //check if user exists
+        const checkIfUserExists = await userController.checkIfUserExists(req.body.email);
+        //if not - throw err
+        //if exists - continue
+        // some type of a malicious attempt conter measure - with session mgmt/validation?
+        // generate new encrypted pwd from req.body.pwd and overwrite the user's hashed pwd on the db
+        
+    } catch (error) {
+        
+    }
+})
 
 module.exports = router;

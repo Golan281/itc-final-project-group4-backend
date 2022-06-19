@@ -1,12 +1,15 @@
-const { nanoid } = require("nanoid");
+
+// const { nanoid } = require("nanoid");
+// const ID = nanoid();
+//maybe go with other ID type
 const { Tab } = require("../../models/mongooseModels/tabSchema");
 
 const path = `${__dirname}/db`;
 
 class DB {
-  constructor(abName) {
-    this.abName = abName;
-    this.abPath = `${path}/${abName}.json`;
+  constructor(tabName) {
+    this.tabName = tabName;
+    this.abPath = `${path}/${tabName}.json`;
   }
 
   createTab = async (tab) => {
@@ -76,11 +79,11 @@ class DB {
   };
 
   save = (data) => {
-    fs.writeFileSync(this.abPath, JSON.stringify(data));
+    fs.writeFileSync(this.tabPath, JSON.stringify(data));
   };
 
   get = () => {
-    const data = fs.readFileSync(this.abPath, "utf-8");
+    const data = fs.readFileSync(this.tabPath, "utf-8");
     return JSON.parse(data);
   };
 

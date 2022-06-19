@@ -30,8 +30,8 @@ const tabSchema = new mongoose.Schema({
   userID: {
     type: String,
   },
-});
+}, { timestamps: true });
 
-const Tab = mongoose.model("tabs", tabSchema);
+const Tab = mongoose.model('tab', tabSchema);
 
 module.exports = { Tab };

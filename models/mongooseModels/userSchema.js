@@ -1,6 +1,9 @@
 
 const mongoose = require('mongoose');
 
+//test this limit method or find other method to limit (built in?)
+const arrLimit = (arr) => arr.length <= 5; 
+
 const userSchema = new mongoose.Schema({
     firstName:
     {
@@ -42,7 +45,9 @@ const userSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-//test this or find other method to limit (built in?)
-const arrLimit = (arr) => arr.length <= 5; 
+const UserSchema = mongoose.model('user', userSchema);
 
-module.exports = mongoose.model('MFBF_user', userSchema)
+module.exports = { UserSchema };
+
+
+// module.exports = mongoose.model('user', userSchema)

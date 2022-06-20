@@ -14,7 +14,10 @@ const userController = {
         const user = await UserSchema.findOne({ email });
         return user;
     },
-
+    updateUserRefreshToken: async (email,token)=> {
+        const user = await UserSchema.findOneAndUpdate({email: email}, {refresh_token: token}, { new: true});
+        return user;
+    },
     resetPwd: async ()=>{
         // const user = await UserSchema.
     }

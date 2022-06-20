@@ -28,15 +28,27 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
         const hashedPwd = bcrypt.hashSync(req.body.password, saltRounds);
         req.body.password = hashedPwd;
         // console.log(req.body)
-
-        const user = await userController.createUser({...req.body});
+        
+        const signedInUserObj = await signUserIn({...req.body});
+        const user = await userController.createUser({...req.body, refreshToken: signedInUserObj.hashedRefreshToken });
         if (!user) throw new Error('Could not register, please try again');
-        const signedInUserObj = await signUserIn(user);
-        res.status(201).json({...signedInUserObj, isValid: true, isLoggedIn: true});
+        res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
+           httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
+        }) //secure: true,
+        res.status(201).json({
+            id: signedInUserObj.user._id,
+            firstName: signedInUserObj.user.firstName,
+            lastName: signedInUserObj.user.lastName,
+            email: signedInUserObj.user.email,
+            userWorkSpaces: signedInUserObj.user.userWorkSpaces,
+            accessToken: signedInUserObj.fullToken.access_token,
+            isValid: true,
+            isLoggedIn: true,
+        });
     } catch (err) {
         next(err.message);
     }
-
+    
 });
 
 
@@ -44,20 +56,32 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
 
 router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
     const { email, password } = req.body;
-        try {
-            const user = await userController.findUserToLogin(email);
-          if (!user) {
-              console.log(' in case !user:', user)
-              throw new Error(`Inexistent user`);
-            }
-            const isValid = bcrypt.compareSync(password, user.password);
-            delete req.body.password;
-            
-            if (isValid) {
-                const signedInUserObj = await signUserIn(user);
-    
-                return res.json({...signedInUserObj, isValid, isLoggedIn: true});
-            }
+    try {
+        const user = await userController.findUserToLogin(email);
+        if (!user) {
+            console.log(' in case !user:', user)
+            throw new Error(`Inexistent user`);
+        }
+        const isValid = bcrypt.compareSync(password, user.password);
+        delete req.body.password;
+        
+        if (isValid) {
+            const signedInUserObj = await signUserIn(user);
+                res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
+                    httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
+                 })
+                 // return res.json({...signedInUserObj, isValid, isLoggedIn: true});
+                 return res.json({
+                     id: signedInUserObj.user._id,
+                     firstName: signedInUserObj.user.firstName,
+                     lastName: signedInUserObj.user.lastName,
+                     email: signedInUserObj.user.email,
+                     userWorkSpaces: signedInUserObj.user.userWorkSpaces,
+                     accessToken: signedInUserObj.fullToken.access_token,
+                     isValid: true,
+                     isLoggedIn: true,
+                    });
+                }
             if (isValid === false) throw new Error('Login attempt failed, wrong password');
             next();
     
@@ -99,7 +123,7 @@ router.post('/refresh', authorizeUser, (req, res, next) => {
 router.post('/resetpwd', authorizeUser, (req,res,next) => {
     try {
         //check if user exists
-        const checkIfUserExists = await userController.checkIfUserExists(req.body.email);
+        // const checkIfUserExists = await userController.checkIfUserExists(req.body.email);
         //if not - throw err
         //if exists - continue
         // some type of a malicious attempt conter measure - with session mgmt/validation?

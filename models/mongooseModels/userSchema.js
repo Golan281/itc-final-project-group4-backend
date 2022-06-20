@@ -33,16 +33,21 @@ const userSchema = new mongoose.Schema({
     userWorkSpaces: {
         type: Array,
         default: ['Work','Learn','Fun','Money','Family'],
-        validate: [arrLimit, '{PATH} exceeds the limit of 5']
+        validate: [arrLimit, '{PATH} exceeds the limit of 5'],
+        // workTabs: [{userID:'', workSpaceId:'', url:'',description:''},{}]
     },
-    currentUserTabs: {
-        type: Array,
-        default: [] //prob just store _id
-    },
-    archivedUserTabs: {
-        type: Array,
-        default: [] //prob just store _id
-    },
+    // currentUserTabs: {
+    //     type: Array,
+    //     default: [] //prob just store _id
+    // },
+    // archivedUserTabs: {
+    //     type: Array,
+    //     default: [] //prob just store _id
+    // },
+    refreshToken: {
+        type: String,
+        required: true,
+    }
 }, { timestamps: true });
 
 const UserSchema = mongoose.model('user', userSchema);

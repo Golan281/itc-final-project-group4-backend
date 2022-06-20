@@ -4,6 +4,9 @@ const dao = new Dao();
 const createTab = async (req, res) => {
   const tab = req.body;
   const newTab = await dao.createTab(tab);
+  const { tabId } = req.params;
+  const workspace = await dao.getWorkspaceByID(req.user.workspaceId);
+  workspace.currentTabs = [...new Set([...workspace.currentTabs, tabId])];
   res.send(`tab created id: ${newTab._id}`);
 };
 

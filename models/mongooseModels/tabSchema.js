@@ -3,35 +3,34 @@
 
 const mongoose = require("mongoose");
 
-const tabSchema = new mongoose.Schema({
-  tabName: {
-    type: String,
-    required: true,
+const tabSchema = new mongoose.Schema(
+  {
+    tabName: {
+      type: String,
+      required: true,
+    },
+    tabURL: {
+      type: String,
+      required: true,
+    },
+    workSpaceID: {
+      type: String,
+      required: true,
+    },
+    workSpaceName: {
+      type: String,
+    },
+    isArchived: {
+      type: Boolean,
+      default: "false",
+    },
+    userID: {
+      type: String,
+    },
   },
-  description: {
-    type: String,
-  },
+  { timestamps: true }
+);
 
-  tabURL: {
-    type: String,
-    required: true,
-  },
-  workSpaceID: {
-    type: String,
-    required: true,
-  },
-  workSpaceName: {
-    type: String,
-  },
-  isArchived: {
-    type: Boolean,
-    default: "false",
-  },
-  userID: {
-    type: String,
-  },
-}, { timestamps: true });
-
-const Tab = mongoose.model('tab', tabSchema);
+const Tab = mongoose.model("tab", tabSchema);
 
 module.exports = { Tab };

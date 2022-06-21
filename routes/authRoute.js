@@ -8,6 +8,9 @@ const saltRounds = parseInt(process.env.SALT);
 const ajvRegisterSchema = require('../models/validationSchemas/ajvAuthRegister.schema')
 const ajvLoginSchema = require('../models/validationSchemas/ajvAuthLogin.schema')
 
+const jwt = require('jsonwebtoken');
+const jwtSecret = process.env.JWT_REFRESH_SECRET;
+
 
 const signUserIn = require('../middleware/signUserIn');
 const ajvValidator = require('../middleware/ajvValidator');
@@ -32,6 +35,7 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
         const signedInUserObj = await signUserIn({...req.body});
         const user = await userController.createUser({...req.body, refreshToken: signedInUserObj.hashedRefreshToken });
         if (!user) throw new Error('Could not register, please try again');
+        //consider creating user workspaces here
         res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
            httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
         }) //secure: true,
@@ -90,12 +94,39 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
         }
     })
 
-router.post('/refresh', authorizeUser, (req, res, next) => {
+router.post('/refresh', authorizeUser, async (req, res, next) => {
     try {
-        const refreshToken = req.headers.authorization;
-        const tokenString = JSON.stringify(refreshToken);
-        console.log('refreshToken from user req is>', tokenString);
-    
+        const userRefreshToken = req.headers.cookie.split('jwt=')[1];
+        // const tokenString = JSON.stringify(userRefreshToken);
+        console.log('userRefreshToken from user req is>', userRefreshToken);
+
+        const checkIfUserAndTokenExist = await userController.checkIfUserExists(req.body.email);
+        // console.log('user & token exists?',checkIfUserAndTokenExist[0].refreshToken)
+        // res.status(200);
+        if (checkIfUserAndTokenExist[0] !== null) {
+            // console.log('data & hash inside if',userRefreshToken, checkIfUserAndTokenExist[0].refreshToken)
+            const isValid = bcrypt.compareSync(userRefreshToken, checkIfUserAndTokenExist[0].refreshToken);
+            console.log('is ref token valid?', isValid)
+            if (isValid) {
+                const signedInUserObj = await signUserIn(checkIfUserAndTokenExist[0]);
+                    res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
+                        httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
+                     })
+                     // return res.json({...signedInUserObj, isValid, isLoggedIn: true});
+                     return res.json({
+                         id: signedInUserObj.user._id,
+                         firstName: signedInUserObj.user.firstName,
+                         lastName: signedInUserObj.user.lastName,
+                         email: signedInUserObj.user.email,
+                         userWorkSpaces: signedInUserObj.user.userWorkSpaces,
+                         accessToken: signedInUserObj.fullToken.access_token,
+                         isValid: true,
+                         isLoggedIn: true,
+                        });
+                    }
+                if (isValid === false) throw new Error('access token renewal attempt failed, please login');
+                next();
+        }
         // var cookieOptions = new CookieOptions
         // {
         //     HttpOnly = true,
@@ -105,12 +136,12 @@ router.post('/refresh', authorizeUser, (req, res, next) => {
         // };
         // Response.Cookies.Append("refreshToken", token, cookieOptions);
     
-            const tokens = tokenGenerator(pack.userId);
+            // const tokens = tokenGenerator(pack.userId);
     
-            res.send(tokens);
-
+            // res.send(tokens);
+        // res.send('cookie receievd! thanks')
     } catch (err) {
-
+        next(err)
     }
 
     });

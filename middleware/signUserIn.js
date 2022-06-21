@@ -2,6 +2,7 @@
 const tokenGenerator = require('../services/tokenGenerator');
 const bcrypt = require('bcrypt');
 const saltRounds = parseInt(process.env.SALT);
+const userController = require('../controllers/db/userController');
 
 const signUserIn = async (user) => {
     try {
@@ -11,8 +12,9 @@ const signUserIn = async (user) => {
         console.log('hashed token from generator>', hashedRefreshToken);
         
         //maybe it's better to save the token here using the mongo service
-        //on register it wont find a user though, so need to handle this exception
-                // const finalUserObj = await userController.updateUserRefreshToken(user.email,signedInUserObj.hashedRefreshToken);
+        //on register it wont find a user ID though, so need to handle this exception
+        const finalUserObj = await userController.updateUserRefreshToken(user.email, hashedRefreshToken);
+        console.log('final user obj on signUserIn midware:', finalUserObj);
         return {
             user,
             fullToken,

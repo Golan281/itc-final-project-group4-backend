@@ -1,6 +1,6 @@
 //check req.headers.authorization? + split bearer & token
 const jwt = require('jsonwebtoken');
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_ACC_SECRET;
 
 
 const authorizeUser =  (req,res,next)  => {

@@ -7,11 +7,15 @@ const dbConnection = require("./controllers/db/mConnection");
 const workspaceRouter = require("./routes/workspaceRoute");
 const authRouter = require("./routes/authRoute");
 
-app.use(
-  cors({
-    origin: `${process.env.CORS_ORIGIN}`,
-  })
-);
+// app.use(
+//   cors({
+//     origin: `${process.env.CORS_ORIGIN}`,
+//   })
+// );
+const corsOptions = require("./config/corsOptions");
+const credentials = require("./Config/credentials");
+app.use(credentials);
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

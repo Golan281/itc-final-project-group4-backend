@@ -1,15 +1,39 @@
 const { WorkSpace } = require("../../models/mongooseModels/workspaceSchema");
+const { UserSchema } = require("../../models/mongooseModels/userSchema");
+// const createWorkSpace = async (workspace) => {
+//   const newWorkspace = await WorkSpace.create({ ...workspace });
+//   return newWorkspace;
+// };
 
-const createWorkSpace = async (workspace) => {
+const createWorkSpace = async (req, res) => {
+  const workspace = req.body;
   const newWorkspace = await WorkSpace.create({ ...workspace });
-  return newWorkspace;
+  const user = await UserSchema.findById(req.body.userID);
+  console.log(user);
+  user.userWorkSpaces = [
+    ...new Set([...user.userWorkSpaces, newWorkspace._id]),
+  ];
+  await user.save();
+
+  res.send(`workspace created: ${newWorkspace}`);
 };
 
-const addNewTab = async (req) => {
-  const newtab = await WorkSpace.findByIdAndUpdate(req._id, {
-    $push: { currentUserTabs: req.params.tabID },
-  });
-  return newtab;
+const UpdateWorkSpaceName = async (req, res) => {
+  const newWorkspace = await WorkSpace.findByIdAndUpdate(
+    req.params.workSpaceId,
+    { workSpaceName: req.body.workSpaceName },
+    { new: true }
+  );
+
+  res.send(`workspace name updated: ${newWorkspace}`);
+};
+
+const deleteWorkSpace = async (req, res) => {
+  const newWorkspace = await WorkSpace.findByIdAndDelete(
+    req.params.workSpaceId
+  );
+  console.log(newWorkspace);
+  res.send(`workspace name deleted: ${newWorkspace}`);
 };
 
 const isCurrentTabLengthEqual10 = async (req) => {
@@ -33,41 +57,10 @@ const archiveUserTabs = async (currTabs) => {
   }
 };
 
-// const updatedUser = await mongooseUserSchema.findByIdAndUpdate(
-//   req.userId,
-//   { $push: { savedPets: req.params.petId } },
-//   { new: true, safe: true, upsert: true }
-// );
-
-// const getTab = async (req, res) => {
-//   const dao = new Dao();
-//   if (Object.keys(req.query).length) {
-//     const queriedTabs = await dao.findTabByQuery(req.query);
-//     res.send(queriedTabs);
-//   } else {
-//     res.send(await dao.getAllTabs());
-//   }
-// };
-
-// const updateTabCol = async (req, res) => {
-//   const { tabId } = req.params;
-//   const tab = await dao.getTabByID(tabId);
-//   const data = req.body;
-//   pet[data.key] = data.value;
-//   await tab.save();
-
-//   res.send("tab Col Updated");
-// };
-
-// const deleteTab = (req, res) => {
-//   const { tabId } = req.params;
-//   pets.delete(tabId);
-//   res.send("tab Deleted");
-// };
-
 module.exports = {
   createWorkSpace,
-  addNewTab,
+  UpdateWorkSpaceName,
+  deleteWorkSpace,
   isCurrentTabLengthEqual10,
   archiveUserTabs,
 };

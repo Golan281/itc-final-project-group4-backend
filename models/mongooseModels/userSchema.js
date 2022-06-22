@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
     },
     userWorkSpaces: {
       type: Array,
-      default: [],
+      default: [""],
       validate: [arrLimit, "{PATH} exceeds the limit of 5"],
     },
   },

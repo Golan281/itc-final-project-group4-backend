@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    accSecret: {
+    accessSecret: {
         type: String,
         required: true,
     }

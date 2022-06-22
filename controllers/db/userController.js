@@ -6,6 +6,7 @@ const userController = {
         return doesUserExist;
     },
     createUser: async (userInstance) => {
+      console.log('user instance on create user', userInstance)
         const user = await UserSchema.create(userInstance);
         return user;
     },
@@ -14,9 +15,9 @@ const userController = {
         const user = await UserSchema.findOne({ email });
         return user;
     },
-    updateUserRefreshToken: async (email,token)=> {
+    updateUserRefreshTokenAndAccessSecret: async (email,token,secret)=> {
         console.log('input inside ref token metohd @ user service',email,token)
-        const user = await UserSchema.findOneAndUpdate({email: email}, {refreshToken: token, accSecret: 'test'}, { new: true});
+        const user = await UserSchema.findOneAndUpdate({email: email}, {refreshToken: token, accessSecret: secret}, { new: true});
         console.log('user inside refresh token method @ user service',user)
         return user;
     },

@@ -10,14 +10,15 @@ const signUserIn = async (user) => {
         console.log('fullToken from generator>', fullToken);
         const hashedRefreshToken = bcrypt.hashSync(fullToken.refresh_token, saltRounds);
         console.log('hashed token from generator>', hashedRefreshToken);
-        
+        const hashedAccessSecret = bcrypt.hashSync(fullToken.accSecret, saltRounds);
         //maybe it's better to save the token here using the mongo service
         //on register it wont find a user ID though, so need to handle this exception
 
         return {
             user, //maybe I need to return a differen user obj?
             fullToken,
-            hashedRefreshToken 
+            hashedRefreshToken,
+            hashedAccessSecret, 
         };
     } catch (err) {
         throw new Error(err);

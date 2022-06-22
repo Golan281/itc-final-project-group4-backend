@@ -29,19 +29,20 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
             throw new Error('user already exists');
         } 
         const hashedPwd = bcrypt.hashSync(req.body.password, saltRounds);
+        
         req.body.password = hashedPwd;
         req.body.refreshToken = "initial token";
-        req.body.accSecret - "initial secret";
+        // req.body.accessSecret - "initial secret";
         // console.log(req.body)
         // const finalUserObj = await userController.updateUserRefreshToken(user.email, hashedRefreshToken);
         // console.log('final user obj on signUserIn midware:', finalUserObj);
 
-        const user = await userController.createUser({...req.body});
+        const user = await userController.createUser({...req.body, accessSecret: 'initial secret'});
         const signedInUserObj = await signUserIn(user);
         // console.log('signedInUser now hass id?',signedInUserObj)
         if (!user) throw new Error('Could not register, please try again');
         //consider creating user workspaces here
-        const updateUserRefreshToken = await userController.updateUserRefreshToken(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken);
+        const updateUserRefreshToken = await userController.updateUserRefreshTokenAndAccessSecret(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken, signedInUserObj.hashedAccessSecret);
         // console.log('did hashed ref token updated?',updateUserRefreshToken)
         res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
            httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
@@ -78,7 +79,7 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
         
         if (isValid) {
             const signedInUserObj = await signUserIn(user);
-            const updateUserRefreshToken = await userController.updateUserRefreshToken(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken);
+            const updateUserRefreshToken = await userController.updateUserRefreshTokenAndAccessSecret(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken, signedInUserObj.accessSecret);
                 res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
                     httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
                  })
@@ -114,6 +115,8 @@ router.post('/refresh', authorizeUser, async (req, res, next) => {
         if (checkIfUserAndTokenExist[0] !== null) {
             // console.log('data & hash inside if',userRefreshToken, checkIfUserAndTokenExist[0].refreshToken)
             const isValid = bcrypt.compareSync(userRefreshToken, checkIfUserAndTokenExist[0].refreshToken);
+
+
             console.log('is ref token valid?', isValid)
             if (isValid) {
                 const signedInUserObj = await signUserIn(checkIfUserAndTokenExist[0]);

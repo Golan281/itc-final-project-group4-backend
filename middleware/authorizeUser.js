@@ -1,13 +1,31 @@
 //check req.headers.authorization? + split bearer & token
 const jwt = require('jsonwebtoken');
-const jwtSecret = process.env.JWT_ACC_SECRET;
+// const jwtSecret = process.env.JWT_ACC_SECRET;
+const userController = require('../controllers/db/userController')
+const bcrypt = require('bcrypt');
 
 
-const authorizeUser =  (req,res,next)  => {
+const authorizeUser =  async (req,res,next)  => {
     const reqAuthToken  = req.headers.authorization ? req.headers.authorization.split(' ')[1] : next('err - invalid token');
+    const checkIfUserAndTokenExist = await userController.checkIfUserExists(req.body.email);
+    console.log('check if user exists on authorize user',checkIfUserAndTokenExist)
+    const jwtAcessSecretFromDb = checkIfUserAndTokenExist[0].accessSecret;
+    const isAccessSecretValid = bcrypt.compareSync(reqAuthToken, jwtAcessSecretFromDb);
+    console.log('jwtSecretFromDb>',jwtAcessSecretFromDb)
+    console.log('is access secret valid>',isAccessSecretValid);
+    
+    const accessSecretTest = 'c854eef464a26a83e0d92427d390b2105151493d197ae96de22a89900a1a21ac';
+    jwt.verify(accessSecretTest, jwtAcessSecretFromDb, (err, decoded) => {
+        //decoded should return the userId
+        console.log('decoded acces secret tkn>',decoded);
+        if (err) {
+            console.log('authUser err>',err);
+            return next('Please login to continue')
+    }})
+
 
     console.log('req.headers.token>', req.headers.authorization) //err when this is commented off for some reason
-    jwt.verify(reqAuthToken, jwtSecret, (err, decoded) => {
+    jwt.verify(reqAuthToken, jwtAcessSecret, (err, decoded) => {
         //decoded should return the userId
         // console.log('decoded bearer tkn>',decoded);
         if (err) {

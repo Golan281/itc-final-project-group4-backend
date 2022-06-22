@@ -30,12 +30,19 @@ router.post('/register',ajvValidator(ajvRegisterSchema), async (req, res, next) 
         } 
         const hashedPwd = bcrypt.hashSync(req.body.password, saltRounds);
         req.body.password = hashedPwd;
+        req.body.refreshToken = "initial token";
+        req.body.accSecret - "initial secret";
         // console.log(req.body)
-        
-        const signedInUserObj = await signUserIn({...req.body});
-        const user = await userController.createUser({...req.body, refreshToken: signedInUserObj.hashedRefreshToken });
+        // const finalUserObj = await userController.updateUserRefreshToken(user.email, hashedRefreshToken);
+        // console.log('final user obj on signUserIn midware:', finalUserObj);
+
+        const user = await userController.createUser({...req.body});
+        const signedInUserObj = await signUserIn(user);
+        // console.log('signedInUser now hass id?',signedInUserObj)
         if (!user) throw new Error('Could not register, please try again');
         //consider creating user workspaces here
+        const updateUserRefreshToken = await userController.updateUserRefreshToken(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken);
+        // console.log('did hashed ref token updated?',updateUserRefreshToken)
         res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
            httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
         }) //secure: true,
@@ -71,6 +78,7 @@ router.post('/login', ajvValidator(ajvLoginSchema), async (req, res, next) => {
         
         if (isValid) {
             const signedInUserObj = await signUserIn(user);
+            const updateUserRefreshToken = await userController.updateUserRefreshToken(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken);
                 res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
                     httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
                  })
@@ -109,9 +117,10 @@ router.post('/refresh', authorizeUser, async (req, res, next) => {
             console.log('is ref token valid?', isValid)
             if (isValid) {
                 const signedInUserObj = await signUserIn(checkIfUserAndTokenExist[0]);
+                const updateUserRefreshToken = await userController.updateUserRefreshToken(signedInUserObj.user.email, signedInUserObj.hashedRefreshToken);
                     res.cookie('jwt', signedInUserObj.fullToken.refresh_token,{
                         httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, 
-                     })
+                     }) //secure: true (for https only)
                      // return res.json({...signedInUserObj, isValid, isLoggedIn: true});
                      return res.json({
                          id: signedInUserObj.user._id,

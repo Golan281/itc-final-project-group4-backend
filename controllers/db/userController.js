@@ -15,7 +15,9 @@ const userController = {
         return user;
     },
     updateUserRefreshToken: async (email,token)=> {
-        const user = await UserSchema.findOneAndUpdate({email: email}, {refresh_token: token}, { new: true});
+        console.log('input inside ref token metohd @ user service',email,token)
+        const user = await UserSchema.findOneAndUpdate({email: email}, {refreshToken: token, accSecret: 'test'}, { new: true});
+        console.log('user inside refresh token method @ user service',user)
         return user;
     },
     resetPwd: async ()=>{

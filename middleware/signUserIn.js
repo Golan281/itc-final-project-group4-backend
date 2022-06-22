@@ -13,10 +13,9 @@ const signUserIn = async (user) => {
         
         //maybe it's better to save the token here using the mongo service
         //on register it wont find a user ID though, so need to handle this exception
-        const finalUserObj = await userController.updateUserRefreshToken(user.email, hashedRefreshToken);
-        console.log('final user obj on signUserIn midware:', finalUserObj);
+
         return {
-            user,
+            user, //maybe I need to return a differen user obj?
             fullToken,
             hashedRefreshToken 
         };

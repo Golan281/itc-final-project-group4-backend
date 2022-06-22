@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken');
-const accSecret = process.env.JWT_ACC_SECRET;
+const SecretRandomizer = require('crypto');
 const refreshSecret = process.env.JWT_REFRESH_SECRET;
 
+
+
 const generateToken = async (userId) => {
+    const accSecret = SecretRandomizer.randomBytes(32).toString('hex');
     const data = {
         userId //will be undefined for the first time printed, because inexsistant on mongo
     }
@@ -18,6 +21,7 @@ const generateToken = async (userId) => {
         access_token,
         refresh_token,
         userId,
+        accSecret,
         // generatedOn,
     }
 }

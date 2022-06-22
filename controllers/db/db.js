@@ -1,100 +1,106 @@
-// // const { nanoid } = require("nanoid");
-// // const ID = nanoid();
-// //maybe go with other ID type
-// const { Tab } = require("../../models/mongooseModels/tabSchema");
+// const { nanoid } = require("nanoid");
+// const ID = nanoid();
+//maybe go with other ID type
+const { Tab } = require("../../models/mongooseModels/tabSchema");
+const { WorkSpace } = require("../../models/mongooseModels/workspaceSchema");
 
-// const path = `${__dirname}/db`;
+const path = `${__dirname}/db`;
 
-// class DB {
-//   constructor(tabName) {
-//     this.tabName = tabName;
-//     this.abPath = `${path}/${tabName}.json`;
-//   }
+class DB {
+  constructor(tabName) {
+    this.tabName = tabName;
+    this.abPath = `${path}/${tabName}.json`;
+  }
 
-//   createTab = async (tab) => {
-//     const newTab = await Tab.create(tab);
-//     return newTab;
-//   };
+  createTab = async (tab) => {
+    const newTab = await Tab.create(tab);
+    return newTab;
+  };
 
-//   getAllTabs = async () => {
-//     const tabs = await Tab.find();
-//     return tabs;
-//   };
+  getAllTabs = async () => {
+    const tabs = await Tab.find();
+    return tabs;
+  };
 
-//   add = (item) => {
-//     const data = this.get();
-//     const newID = nanoid();
-//     data.push({ ...item, id: newID });
-//     this.save(data);
-//     return newID;
-//   };
+  add = (item) => {
+    const data = this.get();
+    const newID = nanoid();
+    data.push({ ...item, id: newID });
+    this.save(data);
+    return newID;
+  };
 
-//   getTabByID = async (id) => {
-//     const tab = await Tab.findById(id);
-//     return tab;
-//   };
+  getTabByID = async (id) => {
+    const tab = await Tab.findById(id);
+    return tab;
+  };
 
-//   findTabs = (query) => {
-//     const data = this.getAllTabs();
-//     const item = data.find((i) => query(i));
-//     return item;
-//   };
+  getWorkSpaceByID = async (id) => {
+    const workspace = await WorkSpace.findById(id);
+    return workspace;
+  };
 
-//   findTabByQuery = async (query) => {
-//     const tabs = await this.getAllTabs();
-//     const queryResults = tabs.filter((item) => {
-//       for (const [key, value] of Object.entries(query)) {
-//         if (key === "ids") {
-//           if (!value.includes(item.id)) {
-//             return false;
-//           }
-//         } else if (item[key] !== value) {
-//           return false;
-//         }
-//       }
-//       return true;
-//     });
-//     return queryResults;
-//   };
+  findTabs = (query) => {
+    const data = this.getAllTabs();
+    const item = data.find((i) => query(i));
+    return item;
+  };
 
-//   updateTab = async (id, item) => {
-//     const data = await this.getAllTabs();
-//     const index = data.findIndex((i) => i.id == id);
-//     const curr = data[index];
-//     data[index] = { ...item, id: curr.id };
-//     this.save(data);
-//   };
+  findTabByQuery = async (query) => {
+    const tabs = await this.getAllTabs();
+    const queryResults = tabs.filter((item) => {
+      for (const [key, value] of Object.entries(query)) {
+        if (key === "ids") {
+          if (!value.includes(item.id)) {
+            return false;
+          }
+        } else if (item[key] !== value) {
+          return false;
+        }
+      }
+      return true;
+    });
+    return queryResults;
+  };
 
-//   updateTabCol = async (id, data) => {
-//     const [tab] = await Tab.find({ _id: id });
-//     Object.assign(tab, { [data.key]: data.value });
-//     await tab.save();
-//   };
+  updateTab = async (id, item) => {
+    const data = await this.getAllTabs();
+    const index = data.findIndex((i) => i.id == id);
+    const curr = data[index];
+    data[index] = { ...item, id: curr.id };
+    this.save(data);
+  };
 
-//   delete = (id) => {
-//     const data = this.get();
-//     const newData = data.filter((i) => i.id !== id);
-//     this.save(newData);
-//   };
+  updateTabCol = async (id, data) => {
+    const [tab] = await Tab.find({ _id: id });
+    Object.assign(tab, { [data.key]: data.value });
+    await tab.save();
+  };
 
-//   save = (data) => {
-//     fs.writeFileSync(this.tabPath, JSON.stringify(data));
-//   };
+  delete = (id) => {
+    const data = this.get();
+    const newData = data.filter((i) => i.id !== id);
+    this.save(newData);
+  };
 
-//   get = () => {
-//     const data = fs.readFileSync(this.tabPath, "utf-8");
-//     return JSON.parse(data);
-//   };
+  save = (data) => {
+    fs.writeFileSync(this.tabPath, JSON.stringify(data));
+  };
 
-//   find = (query) => {
-//     const data = this.get();
-//     const item = data.find((i) => query(i));
-//     return item;
-//   };
+  get = () => {
+    const data = fs.readFileSync(this.tabPath, "utf-8");
+    return JSON.parse(data);
+  };
 
-//   create = () => {
-//     this.save([]);
-//   };
-// }
+  find = (query) => {
+    const data = this.get();
+    const item = data.find((i) => query(i));
+    return item;
+  };
 
-// module.exports = DB;
+  create = () => {
+    this.save([]);
+  };
+}
+
+module.exports = DB;

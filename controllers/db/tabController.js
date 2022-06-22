@@ -1,41 +1,40 @@
-// const Dao = require("../db/db");
-// const dao = new Dao();
+const Dao = require("../db/db");
+const dao = new Dao();
 
-// const createTab = async (req, res) => {
-//   const tab = req.body;
-//   const newTab = await dao.createTab(tab);
-//   res.send(`tab created id: ${newTab._id}`);
-// };
+const { Tab } = require("../../models/mongooseModels/tabSchema");
+const { WorkSpace } = require("../../models/mongooseModels/workspaceSchema");
 
-// const getTab = async (req, res) => {
-//   const dao = new Dao();
-//   if (Object.keys(req.query).length) {
-//     const queriedTabs = await dao.findTabByQuery(req.query);
-//     res.send(queriedTabs);
-//   } else {
-//     res.send(await dao.getAllTabs());
-//   }
-// };
+const createTab = async (req, res) => {
+  const tab = req.body;
+  const newTab = await Tab.create({ ...tab });
 
-// const updateTabCol = async (req, res) => {
-//   const { tabId } = req.params;
-//   const tab = await dao.getTabByID(tabId);
-//   const data = req.body;
-//   pet[data.key] = data.value;
-//   await tab.save();
+  const workspace = await WorkSpace.findById(req.params.workSpaceId);
+  console.log(workspace);
+  workspace.currentUserTabs = [
+    ...new Set([...workspace.currentUserTabs, newTab._id]),
+  ];
+  await workspace.save();
 
-//   res.send("tab Col Updated");
-// };
+  res.send(`tab created: ${newTab}`);
+};
 
-// const deleteTab = (req, res) => {
-//   const { tabId } = req.params;
-//   pets.delete(tabId);
-//   res.send("tab Deleted");
-// };
+const UpdateTab = async (req, res) => {
+  const newTab = await Tab.findByIdAndUpdate(req.params.tabId, {
+    tabName: req.body.tabName,
+    tabURL: req.body.tabURL,
+    isArchived: req.body.isArchived,
+  });
+  res.send(`tab updated: ${newTab}`);
+};
 
-// module.exports = {
-//   createTab,
-//   getTab,
-//   updateTabCol,
-//   deleteTab,
-// };
+const deleteTab = async (req, res) => {
+  const newTab = await Tab.findByIdAndDelete(req.params.tabId);
+  console.log(newTab);
+  res.send(`workspace name deleted: ${newTab}`);
+};
+
+module.exports = {
+  createTab,
+  UpdateTab,
+  deleteTab,
+};

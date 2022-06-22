@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const arrLimit = (arr) => arr.length <= 10;
+// const arrLimit = (arr) => arr.length <= 10;
 
 const workSpaceSchema = new mongoose.Schema(
   {
@@ -12,34 +12,9 @@ const workSpaceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
     currentUserTabs: {
       type: Array,
-      default: [
-        {
-          tabID: "",
-          workSpaceId: "",
-          url: "",
-          description: "",
-          isArchived: false,
-          date: "",
-        },
-      ],
-      validate: [arrLimit, "{PATH} exceeds the limit of 10"],
-    },
-
-    archiveUserTabs: {
-      type: Array,
-      default: [
-        {
-          tabID: "",
-          workSpaceId: "",
-          url: "",
-          description: "",
-          isArchived: true,
-          date: "",
-        },
-      ],
+      default: [""],
     },
   },
   { timestamps: true }

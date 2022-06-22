@@ -1,23 +1,19 @@
 const express = require("express");
 const workSpaceController = require("../controllers/db/workSpaceController");
 const router = express.Router();
+const tabController = require("../controllers/db/tabController");
 
-router.post("/", async (req, resp, next) => {
-  try {
-    const newWorkspace = await workSpaceController.createWorkSpace(req.body);
-    if (!newWorkspace) throw new Error("error with the workspace creation");
-    resp.status(201).send(newWorkspace);
-  } catch (error) {
-    next(error);
-  }
-});
+// Tab CRUD
+router.post("/createTab/:workSpaceId", tabController.createTab);
+router.patch("/updateTab/:tabId", tabController.UpdateTab);
+router.delete("/:tabId", tabController.deleteTab);
 
-router.patch("/:workSpaceId", workSpaceController.addNewTab);
-
-router.post(
-  "/:workSpaceId",
-  workSpaceController.isCurrentTabLengthEqual10,
-  workSpaceController.archiveUserTabs
+// WorkSpace CRUD
+router.post("/", workSpaceController.createWorkSpace);
+router.patch(
+  "/updateWorkSpace/:workSpaceId",
+  workSpaceController.UpdateWorkSpaceName
 );
+router.delete("/:workSpaceId", workSpaceController.deleteWorkSpace);
 
 module.exports = router;

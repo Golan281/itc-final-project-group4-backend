@@ -10,7 +10,7 @@ router.delete("/:tabId", tabController.deleteTab);
 
 // WorkSpace CRUD
 router.post("/", workSpaceController.createWorkSpace);
-router.get("/:userID", workSpaceController.getAllWorkSpace);
+router.get("/:userID", workSpaceController.getAllWorkSpaces);
 router.patch(
   "/updateWorkSpace/:workSpaceId",
   workSpaceController.UpdateWorkSpaceName

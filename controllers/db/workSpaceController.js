@@ -11,16 +11,21 @@ const groupTabsToSimilarWorkSpace = async (req,res) => {
 }
 
 const createWorkSpace = async (req, res) => {
-  const workspace = req.body;
-  const newWorkspace = await WorkSpace.create({ ...workspace });
-  const user = await UserSchema.findById(req.body.userID);
-  console.log(user);
-  user.userWorkSpaces = [
-    ...new Set([...user.userWorkSpaces, newWorkspace._id]),
-  ];
-  await user.save();
-
-  res.send(`workspace created: ${newWorkspace}`);
+  try {
+    const workspace = req.body;
+    const newWorkspace = await WorkSpace.create({ ...workspace });
+    const user = await UserSchema.findById(req.body.userID);
+    console.log(user);
+    user.userWorkSpaces = [
+      ...new Set([...user.userWorkSpaces, newWorkspace._id]),
+    ];
+    await user.save();
+  
+    res.status(201).json({newWorkspace});
+    
+  } catch (error) {
+    next(error)
+  }
 };
 
 const UpdateWorkSpaceName = async (req, res) => {
@@ -33,9 +38,14 @@ const UpdateWorkSpaceName = async (req, res) => {
   res.send(`workspace name updated: ${newWorkspace}`);
 };
 
-const getAllWorkSpace = async (req, res) => {
-  const user = await UserSchema.findById(req.params.userID);
-  res.send(`workspaces: ${user.userWorkSpaces}`);
+const getAllWorkSpaces = async (req, res,next) => {
+  try {
+    const user = await UserSchema.findById(req.params.userID);
+    res.status(200).json(user.userWorkSpaces);
+  } catch (err) {
+    next(err)
+  }
+
 };
 
 const deleteWorkSpace = async (req, res) => {
@@ -73,5 +83,5 @@ module.exports = {
   deleteWorkSpace,
   isCurrentTabLengthEqual10,
   archiveUserTabs,
-  getAllWorkSpace,
+  getAllWorkSpaces,
 };

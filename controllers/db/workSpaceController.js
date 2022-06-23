@@ -28,6 +28,11 @@ const UpdateWorkSpaceName = async (req, res) => {
   res.send(`workspace name updated: ${newWorkspace}`);
 };
 
+const getAllWorkSpace = async (req, res) => {
+  const user = await UserSchema.findById(req.params.userID);
+  res.send(`workspaces: ${user.userWorkSpaces}`);
+};
+
 const deleteWorkSpace = async (req, res) => {
   const newWorkspace = await WorkSpace.findByIdAndDelete(
     req.params.workSpaceId
@@ -63,4 +68,5 @@ module.exports = {
   deleteWorkSpace,
   isCurrentTabLengthEqual10,
   archiveUserTabs,
+  getAllWorkSpace,
 };

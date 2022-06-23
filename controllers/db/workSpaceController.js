@@ -5,10 +5,10 @@ const { UserSchema } = require("../../models/mongooseModels/userSchema");
 //   return newWorkspace;
 // };
 
-const groupTabsToSimilarWorkSpace = async (req,res) => {
+const groupTabsToSimilarWorkSpace = async (req, res) => {
   //check all other workspaces by the user and look for a similar thing
-  //if that's the case - move them to the 
-}
+  //if that's the case - move them to the
+};
 
 const createWorkSpace = async (req, res) => {
   try {
@@ -20,11 +20,10 @@ const createWorkSpace = async (req, res) => {
       ...new Set([...user.userWorkSpaces, newWorkspace._id]),
     ];
     await user.save();
-  
-    res.status(201).json({newWorkspace});
-    
+
+    res.status(201).json({ newWorkspace });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -38,14 +37,18 @@ const UpdateWorkSpaceName = async (req, res) => {
   res.send(`workspace name updated: ${newWorkspace}`);
 };
 
-const getAllWorkSpaces = async (req, res,next) => {
+const getAllWorkSpaces = async (req, res, next) => {
+  console.log(req.params);
+  console.log("GOT TO THIS PLACE");
   try {
-    const user = await UserSchema.findById(req.params.userID);
-    res.status(200).json(user.userWorkSpaces);
+    const userWorkSpaces = await WorkSpace.find({
+      userID: req.params.userID,
+    });
+    console.log(userWorkSpaces);
+    res.status(200).json(userWorkSpaces);
   } catch (err) {
-    next(err)
+    next(err);
   }
-
 };
 
 const deleteWorkSpace = async (req, res) => {

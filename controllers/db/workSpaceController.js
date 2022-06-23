@@ -1,5 +1,6 @@
 const { WorkSpace } = require("../../models/mongooseModels/workspaceSchema");
 const { UserSchema } = require("../../models/mongooseModels/userSchema");
+const { Tab } = require("../../models/mongooseModels/tabSchema");
 // const createWorkSpace = async (workspace) => {
 //   const newWorkspace = await WorkSpace.create({ ...workspace });
 //   return newWorkspace;
@@ -28,6 +29,19 @@ const UpdateWorkSpaceName = async (req, res) => {
   res.send(`workspace name updated: ${newWorkspace}`);
 };
 
+const getAllWorkSpaces = async (req, res, next) => {
+  console.log(req.params);
+  try {
+    const userWorkSpaces = await WorkSpace.find({
+      userID: req.params.userID,
+    });
+    console.log(userWorkSpaces);
+    res.status(200).json(userWorkSpaces);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const deleteWorkSpace = async (req, res) => {
   const newWorkspace = await WorkSpace.findByIdAndDelete(
     req.params.workSpaceId
@@ -50,11 +64,35 @@ const isCurrentTabLengthEqual10 = async (req) => {
   }
 };
 
-const archiveUserTabs = async (currTabs) => {
-  let tabsForArchive;
-  for (let i = 9; i < currTabs.length; i++) {
-    tabsForArchive.push(currTabs[i]);
-  }
+const archiveUserTabs = async (req, res) => {
+  console.log("THIS IS ARCHIVE");
+  const tabID = req.body.tabId;
+  const workSpaceName = req.body.workSpaceName;
+  // const user = await UserSchema.findOne({
+  //   _id: req.body.userID,
+  // });
+
+  const workspace = await WorkSpace.findOne({
+    workSpaceName: workSpaceName,
+  });
+
+  const cleanWorkspace = workspace.currentUserTabs.find(
+    (tab) => tab._id.toString() !== tabID
+  );
+
+  const newArchivedTab = await Tab.findOneAndUpdate(req.body.tabId, {
+    isArchived: true,
+  });
+  cleanWorkspace = {
+    ...cleanWorkspace,
+    isArchived: true,
+  };
+  await workspace.save();
+
+  console.log(cleanWorkspace.isArchived);
+
+  console.log(newArchivedTab);
+  res.json({ workspace });
 };
 
 module.exports = {
@@ -63,4 +101,5 @@ module.exports = {
   deleteWorkSpace,
   isCurrentTabLengthEqual10,
   archiveUserTabs,
+  getAllWorkSpaces,
 };

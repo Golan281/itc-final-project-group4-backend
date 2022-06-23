@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
       default: [""],
       validate: [arrLimit, "{PATH} exceeds the limit of 5"],
     },
+    refreshToken: {
+      type: String,
+      default: '',
+    }
   },
   { timestamps: true }
 );

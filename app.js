@@ -7,11 +7,7 @@ const dbConnection = require("./controllers/db/mConnection");
 const workspaceRouter = require("./routes/workspaceRoute");
 const authRouter = require("./routes/authRoute");
 
-// app.use(
-//   cors({
-//     origin: `${process.env.CORS_ORIGIN}`,
-//   })
-// );
+
 const corsOptions = require("./config/corsOptions");
 const credentials = require("./Config/credentials");
 app.use(credentials);
@@ -32,7 +28,7 @@ app.get("/", (req, res, next) => {
 //err handler
 app.use((err, req, res, next) => {
   console.log("app err handler says:", err);
-  res.status(400).send({
+  res.status(err.status || 400).send({
     error: true,
     message: err,
     //can use - err || err.message (if throwing errors)

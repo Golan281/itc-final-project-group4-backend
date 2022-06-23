@@ -127,11 +127,14 @@ router.post('/refresh', authorizeUser, async (req, res, next) => {
                     isLoggedIn: true,
                 });
             }
-            if (isValid === false) throw new Error('access token renewal attempt failed, please login');
+            if (isValid === false) throw new Error({message: 'Invalid access token', status: 400});
             next();
         }
     } catch (err) {
-
+        // res.status(403).json({ message: 'Outdated access token' })
+        // res.status(400).json({ message: 'Invalid access token' })
+        res.status(err.status).json({message: err.message})
+        next(err.message);
     }
 
 });

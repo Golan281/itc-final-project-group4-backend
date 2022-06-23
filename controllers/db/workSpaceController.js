@@ -39,7 +39,6 @@ const UpdateWorkSpaceName = async (req, res) => {
 
 const getAllWorkSpaces = async (req, res, next) => {
   console.log(req.params);
-  console.log("GOT TO THIS PLACE");
   try {
     const userWorkSpaces = await WorkSpace.find({
       userID: req.params.userID,

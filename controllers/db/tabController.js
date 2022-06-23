@@ -33,7 +33,7 @@ const createTab = async (req, res) => {
       res.json({ workspace });
       return;
     }
-
+    console.log("HERERERERERE");
     const addedWorkspace = await WorkSpace.create({
       userID,
       workSpaceName,
@@ -84,21 +84,22 @@ const deleteTab = async (req, res) => {
     workSpaceName: workSpaceName,
   });
   // console.log(workspace);
-  const ids = workspace.currentUserTabs.map((tab) => tab._id.toString());
 
   const cleanWorkspace = workspace.currentUserTabs.filter(
     (tab) => tab._id.toString() !== tabID
   );
-  const badTab = workspace.currentUserTabs.find(
-    (tab) => tab._id.toString() !== tabID
+  const badTab = workspace.currentUserTabs.filter(
+    (tab) => tab._id.toString() === tabID
   );
-  console.log(cleanWorkspace);
-
+  console.log(badTab);
+  console.log(tabID);
   workspace.currentUserTabs = cleanWorkspace;
+
+  await Tab.findByIdAndDelete({ _id: tabID });
 
   await workspace.save();
   await user.save();
-  await Tab.findByIdAndDelete({ _id: badTab._id });
+
   // console.log(newTabs);
   // console.log(newTab);
 

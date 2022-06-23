@@ -14,7 +14,7 @@ const workSpaceSchema = new mongoose.Schema(
     },
     currentUserTabs: {
       type: Array,
-      default: [""],
+      default: [],
     },
   },
   { timestamps: true }

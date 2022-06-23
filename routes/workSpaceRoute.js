@@ -5,8 +5,8 @@ const tabController = require("../controllers/db/tabController");
 
 // Tab CRUD
 router.post("/createTab/:workSpaceId", tabController.createTab);
-router.patch("/updateTab/:tabId", tabController.UpdateTab);
-router.delete("/:tabId", tabController.deleteTab);
+router.delete("/updateTab/:tabId", tabController.UpdateTab);
+router.patch("/:tabId", tabController.deleteTab);
 
 // WorkSpace CRUD
 router.post("/", workSpaceController.createWorkSpace);

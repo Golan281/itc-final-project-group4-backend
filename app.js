@@ -21,9 +21,6 @@ dbConnection();
 app.use("/v1/auth", authRouter);
 app.use("/v1/workspace", workspaceRouter);
 
-app.get("/", (req, res, next) => {
-  res.send("hello world");
-});
 
 //err handler
 app.use((err, req, res, next) => {

@@ -13,7 +13,8 @@ const tabSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-});
+}, { timestamps: true }
+);
 
 const Tab = mongoose.model("tab", tabSchema);
 

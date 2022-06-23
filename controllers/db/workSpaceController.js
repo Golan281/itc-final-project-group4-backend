@@ -5,6 +5,11 @@ const { UserSchema } = require("../../models/mongooseModels/userSchema");
 //   return newWorkspace;
 // };
 
+const groupTabsToSimilarWorkSpace = async (req,res) => {
+  //check all other workspaces by the user and look for a similar thing
+  //if that's the case - move them to the 
+}
+
 const createWorkSpace = async (req, res) => {
   const workspace = req.body;
   const newWorkspace = await WorkSpace.create({ ...workspace });

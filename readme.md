@@ -1,12 +1,16 @@
-# installation: after running 'npm install', create your local .env file
 
-# run with 'npm start'
+
+# tabCollect
+
+> installation: 
+- after running 'npm install', create your local .env file
+
+> run with 'npm start'
 
 
 > The general idea:
-- a browser management & dashboard app on steriods,something that resembles the following (but does it better!):
-    1. Workona - https://workona.com/ 
-    2. OneTab - https://chrome.google.com/webstore/detail/onetab/chphlpgkkbolifaimnlloiipkdnihall?hl=en
+- a browser management & dashboard app on steriods
+- one that actually helps you to stay organized!
 
 > the problem:
 - the problem with workona/oneTab is they're not organized enough, in reality it's still easy to clutter the browser/RAM memory

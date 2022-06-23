@@ -131,8 +131,6 @@ router.post('/refresh', authorizeUser, async (req, res, next) => {
             next();
         }
     } catch (err) {
-        // res.status(403).json({ message: 'Outdated access token' })
-        // res.status(400).json({ message: 'Invalid access token' })
         res.status(err.status).json({message: err.message})
         next(err.message);
     }
@@ -140,19 +138,5 @@ router.post('/refresh', authorizeUser, async (req, res, next) => {
 });
 
 
-
-// router.post('/resetpwd', authorizeUser, (req, res, next) => {
-//     try {
-//         //check if user exists
-//         // const checkIfUserExists = await userController.checkIfUserExists(req.body.email);
-//         //if not - throw err
-//         //if exists - continue
-//         // some type of a malicious attempt conter measure - with session mgmt/validation?
-//         // generate new encrypted pwd from req.body.pwd and overwrite the user's hashed pwd on the db
-
-//     } catch (error) {
-
-//     }
-// })
 
 module.exports = router;

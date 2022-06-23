@@ -22,16 +22,6 @@ const userController = {
     );
     return user;
   },
-//   resetPwd: async () => {
-//     // const user = await UserSchema.
-//   },
-
-  // getAllWorkSpaces: async () => {
-  //   const workspaces = await UserSchema.find().select(
-  //     "-firstName -lastName -email -password -refreshToken userWorkSpaces"
-  //   );
-  //   return workspaces;
-  // },
 
   updateWorkSpaces: async (id, reqBody) => {
     const workSpace = await UserSchema.findByIdAndUpdate(

@@ -11,10 +11,9 @@ router.patch("/:tabId", tabController.deleteTab);
 // WorkSpace CRUD
 router.post("/", workSpaceController.createWorkSpace);
 router.get("/:userID", workSpaceController.getAllWorkSpaces);
-router.patch(
-  "/updateWorkSpace/:workSpaceId",
-  workSpaceController.UpdateWorkSpaceName
-);
+
+router.post("/ArchiveTab", workSpaceController.archiveUserTabs);
+
 router.delete("/:workSpaceId", workSpaceController.deleteWorkSpace);
 
 module.exports = router;

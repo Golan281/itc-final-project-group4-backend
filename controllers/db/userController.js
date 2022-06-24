@@ -17,20 +17,10 @@ const userController = {
   updateUserRefreshToken: async (email, token) => {
     const user = await UserSchema.findOneAndUpdate(
       { email: email },
-      { refresh_token: token },
+      { refreshToken: token },
       { new: true }
     );
     return user;
-  },
-  resetPwd: async () => {
-    // const user = await UserSchema.
-  },
-
-  getAllWorkSpaces: async () => {
-    const workspaces = await UserSchema.find().select(
-      "-firstName -lastName -email -password -refreshToken userWorkSpaces"
-    );
-    return workspaces;
   },
 
   updateWorkSpaces: async (id, reqBody) => {

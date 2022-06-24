@@ -10,9 +10,7 @@ const signUserIn = async (user) => {
         const hashedRefreshToken = bcrypt.hashSync(fullToken.refresh_token, saltRounds);
         console.log('hashed token from generator>', hashedRefreshToken);
         
-        //maybe it's better to save the token here using the mongo service
-        //on register it wont find a user though, so need to handle this exception
-                // const finalUserObj = await userController.updateUserRefreshToken(user.email,signedInUserObj.hashedRefreshToken);
+
         return {
             user,
             fullToken,

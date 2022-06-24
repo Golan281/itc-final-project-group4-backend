@@ -6,17 +6,26 @@ const { Tab } = require("../../models/mongooseModels/tabSchema");
 //   return newWorkspace;
 // };
 
-const createWorkSpace = async (req, res) => {
-  const workspace = req.body;
-  const newWorkspace = await WorkSpace.create({ ...workspace });
-  const user = await UserSchema.findById(req.body.userID);
-  console.log(user);
-  user.userWorkSpaces = [
-    ...new Set([...user.userWorkSpaces, newWorkspace._id]),
-  ];
-  await user.save();
+const groupTabsToSimilarWorkSpace = async (req, res) => {
+  //check all other workspaces by the user and look for a similar thing
+  //if that's the case - move them to the
+};
 
-  res.send(`workspace created: ${newWorkspace}`);
+const createWorkSpace = async (req, res) => {
+  try {
+    const workspace = req.body;
+    const newWorkspace = await WorkSpace.create({ ...workspace });
+    const user = await UserSchema.findById(req.body.userID);
+    console.log(user);
+    user.userWorkSpaces = [
+      ...new Set([...user.userWorkSpaces, newWorkspace._id]),
+    ];
+    await user.save();
+
+    res.status(201).json({ newWorkspace });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const UpdateWorkSpaceName = async (req, res) => {
